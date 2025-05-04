@@ -1,0 +1,6 @@
+ultralytics
+opencv-python
+tensorflow
+pandas
+twilio
+deep_sort_realtime
