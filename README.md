@@ -1,83 +1,183 @@
-# 🚨 Accident Detection System (YOLOv8 + DeepSORT + ConvLSTM)
+# 🚗 Accident Detection & Alerting System
 
-This project is a hybrid accident detection system combining real-time object detection, tracking, and video-based classification. It identifies accidents in videos and classifies their type and severity using deep learning.
-
-## 🔧 Features
-
-* **YOLOv8** for detecting road objects (vehicles, people, etc.)
-* **Custom YOLOv8 model** for detecting accidents/non-accidents
-* **DeepSORT** for multi-object tracking with unique IDs
-* **ConvLSTM** for accident type classification using video sequences
-* **Logging** (CSV format) of accident events with details
-* **Video clip saving** for detected accident intervals
-* **email/SMS alerts** (can be configured in `alerts.py`)
+An end-to-end real-time accident detection system using YOLOv8, DeepSORT, and ConvLSTM. Sends **email and SMS alerts** with video evidence for critical/high-severity incidents detected in surveillance footage.
 
 ---
 
-## 🚀 Getting Started
+## 📂 Project Structure
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/accident-detection-system.git
-cd accident-detection-system
+```
+.
+├── main.py                    # Entry point of the system
+├── pipeline.py                # Core logic for detection, tracking, classification
+├── config.py                 # Configuration: models, classes, paths, constants
+├── alerts.py                 # Email and SMS alert functions
+├── utils.py                  # Clip generation and frame sequence handling
+├── clips/                    # Auto-created to save incident clips
+├── models/                   # Folder with YOLO & ConvLSTM models
+├── accident_log.csv          # Log file for detected incidents
+└── README.md                 
 ```
 
-### 2. Install dependencies
+---
+
+## 🧠 Key Components
+
+### 1. `config.py`
+
+* Loads all models: YOLOv8 for object + accident detection, ConvLSTM for classification.
+* Defines class names, severity levels, alert credentials, log paths, etc.
+* Initializes DeepSORT for object tracking.
+
+👉 **Update this file** with:
+
+* Your **Twilio credentials**
+* Your **Gmail** and app password
+* Model file paths if different
+
+---
+
+### 2. `pipeline.py`
+
+This is the **core engine** that:
+
+* Reads input video/live stream
+* Detects objects using YOLOv8 (coco)
+* Detects accident zones using YOLOv8 (accident model)
+* Classifies incident type with ConvLSTM
+* Tracks objects using DeepSORT
+* Sends alert via **email** and **SMS** (only once per event)
+* Logs every incident to CSV
+* Saves pre- and post-incident video clips
+
+---
+
+### 3. `alerts.py`
+
+Handles:
+
+* 📧 Sending email with video attachment
+* 📲 Sending SMS with incident summary (via Twilio)
+
+---
+
+### 4. `utils.py`
+
+Utility functions:
+
+* Create frame sequence for ConvLSTM
+* Save full-frame clips (3 seconds)
+* Save cropped object clips (optional)
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/yourusername/accident-detection-alerts.git
+cd accident-detection-alerts
+```
+
+### 2. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
+**Sample `requirements.txt`:**
+
+```txt
+opencv-python
+numpy
+tensorflow
+ultralytics
+deep_sort_realtime
+twilio
+```
+
+### 3. Download & Place Models
+
+Put your model files in the `models/` folder:
+
+* `yolov8n.pt` – COCO object detector
+* `best.pt` – YOLOv8 accident detector
+* `ConvLSTM_best_model.keras` – ConvLSTM classifier
+
 ---
 
-### 3. Add Model Weights
+## ▶️ How to Run
 
-* Place your trained **YOLOv8 weights** (e.g., `best.pt`) in the appropriate path.
-* Include your trained **ConvLSTM model** (e.g., `convlstm_model.keras`) as defined in `config.py`.
-
----
-
-### 4. Run the Full Pipeline
+### Option 1: Process a video file
 
 ```bash
 python main.py
 ```
 
-By default, this runs on the input video path configured in `main.py`.
-
-If using a webcam, update `video_input = 0` in `main.py`.
-
----
-
-## 📁 Output
-
-* Annotated output video (`output_YYYYMMDD_HHMMSS.mp4`)
-* Logged events in CSV (`accident_log.csv`)
-* Saved accident clips in `/clips/` folder
-
----
-
-## 🔧 Configuration
-
-All paths, thresholds, model configs can be adjusted in:
+Ensure you update this line in `main.py`:
 
 ```python
-config.py
+video_input = "your_video.mp4"  # Path to input video
 ```
 
-For alerts, update the placeholders in:
+### Option 2: Real-time from webcam
+
+In `main.py`:
 
 ```python
-alerts.py
+video_input = 0  # Use 0 for default webcam
 ```
 
 ---
 
-## 🧠 Model Architecture
+## 🔄 Flow Summary
 
-* **YOLOv8**: Detect objects and accident regions in each frame.
-* **DeepSORT**: Track objects across frames and assign unique IDs.
-* **ConvLSTM**: Predict accident type based on last `N` frames around detection.
+1. **YOLOv8 (COCO)** detects objects (car, person, truck, etc.).
+2. **DeepSORT** assigns consistent IDs across frames.
+3. **YOLOv8 (Accident)** detects accident zones.
+4. **ConvLSTM** confirms accident type from past 12 frames.
+5. If accident is serious (`High`, `Critical`):
+
+   * Extract 3-second clip (1.5s before & after)
+   * Send **email** with video
+   * Send **SMS** with details
+6. Log all detections to `accident_log.csv`.
 
 ---
+
+## 📧 Alert Examples
+
+**Email Subject:**
+
+```
+🚨 pedestrian_hit (Critical) Detected
+```
+
+**SMS Body:**
+
+```
+🚨 pedestrian_hit (Critical)
+Object: person (ID 12)
+Frame: 275
+Clip: ID12_pedestrian_hit.mp4
+Time: 2025-05-07 12:35:15
+Check your Mail for Video Clip
+```
+
+---
+
+## 🔐 Configuration Tips
+
+* **Gmail App Password**: [How to get it](https://support.google.com/accounts/answer/185833?hl=en)
+* **Twilio SID/Auth Token**: Set from your Twilio Console.
+
+---
+
+## ✅ Features
+
+* [x] Real-time video processing
+* [x] Email + SMS alerts
+* [x] Intelligent accident classification
+* [x] Per-object tracking
+* [x] Logging and video saving
