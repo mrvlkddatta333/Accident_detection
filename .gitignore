@@ -29,3 +29,4 @@ models/*.keras
 *.swo
 check*.py
 list*.py
+test*.py
