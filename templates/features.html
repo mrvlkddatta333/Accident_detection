@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - Accident Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🚗 Accident Detection</div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('features') }}" class="active">Features</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                <li><a href="{{ url_for('login') }}" class="btn-nav">Login</a></li>
+                <li><a href="{{ url_for('register') }}" class="btn-nav-primary">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>Powerful Features</h1>
+        <p>Everything you need for comprehensive accident detection and monitoring</p>
+    </section>
+
+    <!-- Features Detail -->
+    <section class="features-detail">
+        <div class="feature-detail">
+            <div class="feature-detail-icon">🎯</div>
+            <div class="feature-detail-content">
+                <h2>Real-Time Detection</h2>
+                <p>Our system processes video feeds in real-time using advanced YOLOv8 object detection and ConvLSTM classification. Detect accidents as they happen with sub-2-second response times.</p>
+                <ul>
+                    <li>✓ 99.2% detection accuracy</li>
+                    <li>✓ 12+ accident types classified</li>
+                    <li>✓ Multi-object tracking with DeepSORT</li>
+                    <li>✓ Severity-based classification (Critical, High, Medium, Low)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature-detail reverse">
+            <div class="feature-detail-icon">📹</div>
+            <div class="feature-detail-content">
+                <h2>Multiple Video Sources</h2>
+                <p>Flexible input options to suit your monitoring needs. Upload recorded videos, connect live webcams, or integrate with existing RTSP camera systems.</p>
+                <ul>
+                    <li>✓ Video file upload (MP4, AVI, MOV, MKV)</li>
+                    <li>✓ Webcam integration</li>
+                    <li>✓ RTSP stream support for IP cameras</li>
+                    <li>✓ Drag-and-drop interface</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature-detail">
+            <div class="feature-detail-icon">📧</div>
+            <div class="feature-detail-content">
+                <h2>Instant Alerts</h2>
+                <p>Get notified immediately when critical incidents are detected. Automatic email and SMS alerts ensure you never miss an important event.</p>
+                <ul>
+                    <li>✓ Email alerts with video attachments</li>
+                    <li>✓ SMS notifications via Twilio</li>
+                    <li>✓ Configurable severity thresholds</li>
+                    <li>✓ Incident details and timestamps</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature-detail reverse">
+            <div class="feature-detail-icon">🎥</div>
+            <div class="feature-detail-content">
+                <h2>Video Evidence</h2>
+                <p>Automatically save video clips of detected incidents with pre and post-event footage for comprehensive documentation.</p>
+                <ul>
+                    <li>✓ 3-second clips (1.5s before + 1.5s after)</li>
+                    <li>✓ Automatic clip generation</li>
+                    <li>✓ Organized clip management</li>
+                    <li>✓ In-browser video playback</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature-detail">
+            <div class="feature-detail-icon">📊</div>
+            <div class="feature-detail-content">
+                <h2>Analytics Dashboard</h2>
+                <p>Comprehensive statistics and visualizations to track incidents, analyze patterns, and generate reports.</p>
+                <ul>
+                    <li>✓ Real-time statistics</li>
+                    <li>✓ Incident logs with CSV export</li>
+                    <li>✓ Interactive charts and graphs</li>
+                    <li>✓ Historical data analysis</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature-detail reverse">
+            <div class="feature-detail-icon">🔐</div>
+            <div class="feature-detail-content">
+                <h2>Security & Access Control</h2>
+                <p>Enterprise-grade security with role-based access control, user management, and session tracking.</p>
+                <ul>
+                    <li>✓ User authentication and authorization</li>
+                    <li>✓ Admin and user roles</li>
+                    <li>✓ Session monitoring</li>
+                    <li>✓ Encrypted password storage</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <h2>Ready to Get Started?</h2>
+        <p>Experience the power of AI-driven accident detection</p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">Start Free Trial</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🚗 Accident Detection</h4>
+                <p>AI-powered safety solution for real-time accident detection and alerting.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('features') }}">Features</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Account</h4>
+                <ul>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: info@accident-detection.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Accident Detection System. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

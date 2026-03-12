@@ -18,7 +18,11 @@ def send_email_alert(subject, body, to_email, video_path=None):
     if video_path and os.path.exists(video_path):
         # Sanitize path to prevent path traversal attacks
         video_path = os.path.abspath(video_path)
-        if not video_path.startswith(os.path.abspath(clip_output_dir)):
+        # Allow clips from both default clip_output_dir and static/clips subdirectories
+        clips_base = os.path.abspath(os.path.join('static', 'clips'))
+        default_clips = os.path.abspath(clip_output_dir)
+        
+        if not (video_path.startswith(clips_base) or video_path.startswith(default_clips)):
             print(f"Security: Rejected video path outside clips directory: {video_path}")
             return
             

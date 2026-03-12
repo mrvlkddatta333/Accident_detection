@@ -23,7 +23,7 @@ def extract_sequence(cap, current_frame_idx, num_frames=12, size=(64, 64)):
 # ---------------------------
 # Save Full-Frame Accident Clip (3 seconds: 1.5s before + after)
 # ---------------------------
-def save_fullframe_clip(video_path, pre_buffer_frames, start_frame_idx, accident_type, fps, width, height):
+def save_fullframe_clip(video_path, pre_buffer_frames, start_frame_idx, accident_type, fps, width, height, output_folder=None, session_id=None):
     # Sanitize accident_type to prevent path traversal
     safe_accident_type = "".join(c for c in accident_type if c.isalnum() or c in ('_', '-'))
     
@@ -35,11 +35,16 @@ def save_fullframe_clip(video_path, pre_buffer_frames, start_frame_idx, accident
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"Accident_{safe_accident_type}_{timestamp}_f{start_frame_idx}.mp4"
-    out_path = os.path.join(clip_output_dir, filename)
+    
+    # Use output_folder if provided, otherwise use default clip_output_dir
+    output_dir = output_folder if output_folder else clip_output_dir
+    os.makedirs(output_dir, exist_ok=True)
+    
+    out_path = os.path.join(output_dir, filename)
     
     # Ensure output path is within clip directory
     out_path = os.path.abspath(out_path)
-    if not out_path.startswith(os.path.abspath(clip_output_dir)):
+    if not out_path.startswith(os.path.abspath(output_dir)):
         print(f"Security: Rejected output path outside clips directory")
         cap.release()
         return None

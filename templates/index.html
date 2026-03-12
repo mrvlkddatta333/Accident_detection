@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚗 Accident Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="user-layout">
+        <!-- Sidebar -->
+        <aside class="user-sidebar">
+            <div class="sidebar-header">
+                <h2>🚗 Detection System</h2>
+                <p>{{ current_user.username }}</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="detection">
+                    <span class="nav-icon">🎯</span>
+                    <span>Detection</span>
+                </a>
+                <a href="#" class="nav-item" data-section="logs">
+                    <span class="nav-icon">📋</span>
+                    <span>Logs</span>
+                </a>
+                <a href="#" class="nav-item" data-section="sessions">
+                    <span class="nav-icon">🕒</span>
+                    <span>Sessions</span>
+                </a>
+                <a href="#" class="nav-item" data-section="statistics">
+                    <span class="nav-icon">📊</span>
+                    <span>Statistics</span>
+                </a>
+                <a href="#" class="nav-item" data-section="clips">
+                    <span class="nav-icon">🎥</span>
+                    <span>Video Clips</span>
+                </a>
+                <a href="#" class="nav-item" data-section="uploads">
+                    <span class="nav-icon">📹</span>
+                    <span>Uploaded Videos</span>
+                </a>
+                <a href="#" class="nav-item" data-section="profile">
+                    <span class="nav-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                {% if current_user.is_admin() %}
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary btn-block">🔐 Admin Panel</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}" class="btn btn-danger btn-block">🚪 Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="user-main">
+            <!-- Detection Section -->
+            <section id="detection" class="user-section active">
+                <div class="section-header">
+                    <div>
+                        <h1>Accident Detection</h1>
+                        <p>Upload videos or connect live streams for real-time detection</p>
+                    </div>
+                    <button id="configBtn" class="btn btn-secondary">⚙️ Settings</button>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button id="uploadBtn" class="action-card upload">
+                        <div class="action-icon">📤</div>
+                        <h3>Upload Video</h3>
+                        <p>Analyze pre-recorded footage</p>
+                    </button>
+                    <button id="liveBtn" class="action-card live">
+                        <div class="action-icon">📹</div>
+                        <h3>Live Detection</h3>
+                        <p>Connect webcam or RTSP stream</p>
+                    </button>
+                </div>
+
+                <!-- Control Panel -->
+                <div class="control-panel">
+                    <button id="startBtn" class="btn btn-success btn-large" disabled>▶️ Start Detection</button>
+                    <button id="stopBtn" class="btn btn-danger btn-large" disabled style="display: none;">⏹️ Stop Detection</button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">🎯</div>
+                        <div class="stat-content">
+                            <h3 id="totalDetections">0</h3>
+                            <p>Total Detections</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">🚨</div>
+                        <div class="stat-content">
+                            <h3 id="criticalAlerts">0</h3>
+                            <p>Critical Alerts</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">⚡</div>
+                        <div class="stat-content">
+                            <h3 id="processingFPS">0</h3>
+                            <p>Processing FPS</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Feed -->
+                <div class="video-card">
+                    <h3>Live Feed</h3>
+                    <div class="video-container">
+                        <canvas id="videoCanvas"></canvas>
+                        <p id="videoStatus">No video feed. Start detection to view live feed.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Logs Section -->
+            <section id="logs" class="user-section">
+                <div class="section-header">
+                    <h1>Detection Logs</h1>
+                    <div class="header-actions">
+                        <button id="refreshLogs" class="btn btn-secondary">🔄 Refresh</button>
+                        <button id="toggleAutoRefresh" class="btn btn-success">✅ Auto-Refresh: ON</button>
+                    </div>
+                </div>
+                
+                <div class="table-card">
+                    <table id="logsTable">
+                        <thead>
+                            <tr>
+                                <th>Frame</th>
+                                <th>Track ID</th>
+                                <th>Accident Type</th>
+                                <th>Severity</th>
+                                <th>BBox</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Sessions Section -->
+            <section id="sessions" class="user-section">
+                <div class="section-header">
+                    <h1>Detection Sessions</h1>
+                    <div class="header-actions">
+                        <button id="refreshSessions" class="btn btn-secondary">🔄 Refresh</button>
+                        <button id="toggleAutoRefresh" class="btn btn-success">✅ Auto-Refresh: ON</button>
+                    </div>
+                </div>
+                
+                <div class="table-card">
+                    <table id="sessionsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Video Source</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Detections</th>
+                                <th>Critical Alerts</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <section id="statistics" class="user-section">
+                <div class="section-header">
+                    <h1>Statistics & Analytics</h1>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Accident Types Distribution</h3>
+                        <canvas id="accidentTypeChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Severity Breakdown</h3>
+                        <canvas id="severityChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clips Section -->
+            <section id="clips" class="user-section">
+                <div class="section-header">
+                    <h1>Saved Video Clips</h1>
+                    <div class="header-actions">
+                        <button id="refreshClips" class="btn btn-secondary">🔄 Refresh</button>
+                        <button id="toggleAutoRefreshClips" class="btn btn-success">✅ Auto-Refresh: ON</button>
+                    </div>
+                </div>
+                
+                <div id="clipsList" class="clips-grid"></div>
+            </section>
+
+            <!-- Uploads Section -->
+            <section id="uploads" class="user-section">
+                <div class="section-header">
+                    <h1>My Uploaded Videos</h1>
+                    <div class="header-actions">
+                        <button id="refreshUploads" class="btn btn-secondary">🔄 Refresh</button>
+                    </div>
+                </div>
+                
+                <div id="uploadsList" class="clips-grid"></div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="user-section">
+                <div class="section-header">
+                    <h1>User Profile</h1>
+                </div>
+
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">{{ current_user.username[0].upper() }}</div>
+                        <div class="profile-info">
+                            <h2>{{ current_user.username }}</h2>
+                            <p>{{ current_user.email }}</p>
+                            <span class="role-badge {{ current_user.role }}">{{ current_user.role }}</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Account Status:</span>
+                            <span class="status-badge {{ 'active' if current_user.is_active else 'inactive' }}">
+                                {{ 'Active' if current_user.is_active else 'Inactive' }}
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Member Since:</span>
+                            <strong>{{ current_user.created_at.strftime('%B %d, %Y') }}</strong>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Last Login:</span>
+                            <strong>{{ current_user.last_login.strftime('%B %d, %Y at %I:%M %p') if current_user.last_login else 'Never' }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Configuration Modal -->
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>⚙️ Detection Settings</h2>
+            
+            <div class="config-section">
+                <h3>🎯 Detection Settings</h3>
+                <label>Confidence Threshold: <span id="confValue">0.4</span></label>
+                <input type="range" id="confThreshold" min="0.1" max="1.0" step="0.05" value="0.4">
+                
+                <label>Alert Severity Levels:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="Critical" checked> Critical</label>
+                    <label><input type="checkbox" value="High" checked> High</label>
+                    <label><input type="checkbox" value="Medium"> Medium</label>
+                    <label><input type="checkbox" value="Low"> Low</label>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>📧 Alert Settings</h3>
+                <label><input type="checkbox" id="enableEmail" checked> Enable Email Alerts</label>
+                <label><input type="checkbox" id="enableSMS" checked> Enable SMS Alerts</label>
+            </div>
+
+            <button id="saveConfig" class="btn btn-primary">Save Configuration</button>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close-upload">&times;</span>
+            <h2>📤 Upload Video for Detection</h2>
+            
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📹</div>
+                <h3>Drag & Drop Video Here</h3>
+                <p>or</p>
+                <label for="videoFileInput" class="btn btn-primary">Browse Files</label>
+                <input type="file" id="videoFileInput" accept="video/*" style="display: none;">
+                <p class="upload-info">Supported formats: MP4, AVI, MOV, MKV</p>
+            </div>
+
+            <div id="uploadProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="progressText">Uploading... 0%</p>
+            </div>
+
+            <div id="uploadSuccess" style="display: none;">
+                <div class="success-icon">✅</div>
+                <h3>Video Uploaded Successfully!</h3>
+                <p id="uploadedFileName"></p>
+                <button id="startDetectionFromUpload" class="btn btn-success">▶️ Start Detection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Detection Modal -->
+    <div id="liveModal" class="modal">
+        <div class="modal-content">
+            <span class="close-live">&times;</span>
+            <h2>📹 Live Detection Setup</h2>
+            
+            <div class="live-options">
+                <div class="live-option-card" id="webcamOption">
+                    <div class="live-icon">🎥</div>
+                    <h3>Webcam</h3>
+                    <p>Use your computer's webcam for real-time detection</p>
+                    <button class="btn btn-primary select-live" data-source="0">Select Webcam</button>
+                </div>
+                
+                <div class="live-option-card" id="rtspOption">
+                    <div class="live-icon">📡</div>
+                    <h3>RTSP Stream</h3>
+                    <p>Connect to IP camera or RTSP stream</p>
+                    <input type="text" id="rtspUrl" placeholder="rtsp://username:password@ip:port/stream">
+                    <button class="btn btn-primary select-live" data-source="rtsp">Connect Stream</button>
+                </div>
+            </div>
+
+            <div id="liveSuccess" style="display: none;">
+                <div class="success-icon">✅</div>
+                <h3>Live Source Connected!</h3>
+                <p id="liveSourceInfo"></p>
+                <button id="startLiveDetection" class="btn btn-success">▶️ Start Live Detection</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        // Current user ID for media paths
+        const currentUserId = {{ current_user.id }};
+        
+        // Prevent back button after logout
+        window.onload = function() {
+            if (performance.navigation.type === 2) {
+                window.location.reload();
+            }
+        };
+        
+        // Disable back button functionality
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            history.go(1);
+        };
+    </script>
+</body>
+</html>

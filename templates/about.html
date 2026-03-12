@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Accident Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🚗 Accident Detection</div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}" class="active">About</a></li>
+                <li><a href="{{ url_for('features') }}">Features</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                <li><a href="{{ url_for('login') }}" class="btn-nav">Login</a></li>
+                <li><a href="{{ url_for('register') }}" class="btn-nav-primary">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>About Our System</h1>
+        <p>Revolutionizing road safety with artificial intelligence</p>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="content-section">
+        <div class="content-container">
+            <h2>Our Mission</h2>
+            <p>We are dedicated to making roads safer through cutting-edge artificial intelligence technology. Our accident detection system provides real-time monitoring and instant alerts to help prevent accidents and save lives.</p>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section class="content-section alt-bg">
+        <div class="content-container">
+            <h2>Our Technology</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h3>🎯 YOLOv8</h3>
+                    <p>State-of-the-art object detection for identifying vehicles, pedestrians, and accident zones in real-time.</p>
+                </div>
+                <div class="tech-item">
+                    <h3>🧠 ConvLSTM</h3>
+                    <p>Advanced neural network for temporal analysis and accurate accident classification across 12 different types.</p>
+                </div>
+                <div class="tech-item">
+                    <h3>🎬 DeepSORT</h3>
+                    <p>Robust object tracking algorithm that maintains consistent identification across video frames.</p>
+                </div>
+                <div class="tech-item">
+                    <h3>⚡ Real-Time Processing</h3>
+                    <p>Optimized pipeline for instant detection and alerting with minimal latency.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Accident Types -->
+    <section class="content-section">
+        <div class="content-container">
+            <h2>Detected Accident Types</h2>
+            <div class="accident-types">
+                <div class="accident-type critical">Pedestrian Hit</div>
+                <div class="accident-type critical">Fire or Explosions</div>
+                <div class="accident-type critical">Rollover</div>
+                <div class="accident-type critical">Head-on Collision</div>
+                <div class="accident-type high">Rear Collision</div>
+                <div class="accident-type high">Side Collision</div>
+                <div class="accident-type high">Motorcycle Collision</div>
+                <div class="accident-type high">Objects Falling</div>
+                <div class="accident-type medium">Drifting/Skidding</div>
+                <div class="accident-type medium">Stationary Object Collision</div>
+                <div class="accident-type medium">Other Crash</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🚗 Accident Detection</h4>
+                <p>AI-powered safety solution for real-time accident detection and alerting.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('features') }}">Features</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Account</h4>
+                <ul>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: info@accident-detection.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Accident Detection System. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

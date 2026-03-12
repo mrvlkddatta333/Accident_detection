@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Accident Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>🚗 Admin Panel</h2>
+                <p>{{ current_user.username }}</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="overview">
+                    <span class="nav-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-section="users">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </a>
+                <a href="#" class="nav-item" data-section="sessions">
+                    <span class="nav-icon">📹</span>
+                    <span>Detection Sessions</span>
+                </a>
+                <a href="#" class="nav-item" data-section="logs">
+                    <span class="nav-icon">📋</span>
+                    <span>Detection Logs</span>
+                </a>
+                <a href="#" class="nav-item" data-section="analytics">
+                    <span class="nav-icon">📈</span>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="nav-item" data-section="clips">
+                    <span class="nav-icon">🎥</span>
+                    <span>Video Clips</span>
+                </a>
+                <a href="#" class="nav-item" data-section="uploads">
+                    <span class="nav-icon">📹</span>
+                    <span>Uploaded Videos</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="{{ url_for('index') }}" class="btn btn-secondary btn-block">🏠 User Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger btn-block">🚪 Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Overview Section -->
+            <section id="overview" class="admin-section active">
+                <div class="section-header">
+                    <h1>Dashboard Overview</h1>
+                    <p>Real-time system statistics and insights</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">👥</div>
+                        <div class="stat-content">
+                            <h3 id="totalUsersOverview">0</h3>
+                            <p>Total Users</p>
+                            <span class="stat-change positive">+2 this week</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon green">✅</div>
+                        <div class="stat-content">
+                            <h3 id="activeUsersOverview">0</h3>
+                            <p>Active Users</p>
+                            <span class="stat-change positive">+5% from last month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon orange">📹</div>
+                        <div class="stat-content">
+                            <h3 id="activeSessionsOverview">0</h3>
+                            <p>Active Sessions</p>
+                            <span class="stat-change">Currently running</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon red">🚨</div>
+                        <div class="stat-content">
+                            <h3 id="totalDetectionsOverview">0</h3>
+                            <p>Total Detections</p>
+                            <span class="stat-change positive">+12 today</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon purple">⚠️</div>
+                        <div class="stat-content">
+                            <h3 id="criticalAlertsOverview">0</h3>
+                            <p>Critical Alerts</p>
+                            <span class="stat-change negative">3 in last hour</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon teal">📊</div>
+                        <div class="stat-content">
+                            <h3>1.8s</h3>
+                            <p>Avg Response Time</p>
+                            <span class="stat-change positive">-0.2s improvement</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <h3>Detection Trends (Last 7 Days)</h3>
+                        <canvas id="detectionTrendChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>User Activity</h3>
+                        <canvas id="userActivityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="activity-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0;">Recent Activity</h3>
+                        <button class="btn btn-secondary" onclick="loadRecentActivity()" style="padding: 8px 16px; font-size: 14px;">🔄 Refresh</button>
+                    </div>
+                    <div class="activity-list" id="recentActivity">
+                        <div style="text-align: center; padding: 40px; color: #999;">
+                            <p>Loading activity...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users" class="admin-section">
+                <div class="section-header">
+                    <h1>User Management</h1>
+                    <button class="btn btn-primary">➕ Add New User</button>
+                </div>
+                
+                <div class="search-filter">
+                    <input type="text" id="userSearch" placeholder="🔍 Search users...">
+                    <select id="roleFilter">
+                        <option value="">All Roles</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="table-card">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Sessions Section -->
+            <section id="sessions" class="admin-section">
+                <div class="section-header">
+                    <h1>Detection Sessions</h1>
+                    <div class="header-actions">
+                        <button id="deleteAllSessions" class="btn btn-danger">🗑️ Delete All Sessions</button>
+                        <button id="stopAllSessions" class="btn btn-danger">⏹️ Stop All Active</button>
+                        <button id="refreshSessionsAdmin" class="btn btn-secondary">🔄 Refresh</button>
+                        <button id="toggleAutoRefreshAdmin" class="btn btn-success">✅ Auto-Refresh: ON</button>
+                    </div>
+                </div>
+                
+                <div class="search-filter">
+                    <input type="text" id="sessionSearch" placeholder="🔍 Search sessions...">
+                    <select id="sessionStatusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                        <option value="stopped">Stopped</option>
+                    </select>
+                </div>
+
+                <div class="table-card">
+                    <table id="sessionsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Video Source</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Detections</th>
+                                <th>Critical Alerts</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Logs Section -->
+            <section id="logs" class="admin-section">
+                <div class="section-header">
+                    <h1>Detection Logs</h1>
+                    <div class="header-actions">
+                        <button id="refreshLogsAdmin" class="btn btn-secondary">🔄 Refresh</button>
+                        <button id="clearLogsAdmin" class="btn btn-danger">🗑️ Clear All Logs</button>
+                        <button id="toggleAutoRefreshAdminLogs" class="btn btn-success">✅ Auto-Refresh: ON</button>
+                    </div>
+                </div>
+                
+                <div class="search-filter">
+                    <input type="text" id="logSearch" placeholder="🔍 Search logs...">
+                    <select id="logSeverityFilter">
+                        <option value="">All Severities</option>
+                        <option value="Critical">Critical</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+
+                <div class="table-card">
+                    <table id="logsTableAdmin">
+                        <thead>
+                            <tr>
+                                <th>Frame</th>
+                                <th>Track ID</th>
+                                <th>Accident Type</th>
+                                <th>Severity</th>
+                                <th>BBox</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics" class="admin-section">
+                <div class="section-header">
+                    <h1>Analytics & Reports</h1>
+                    <button class="btn btn-primary">📄 Generate Report</button>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card full-width">
+                        <h3>Accident Types Distribution</h3>
+                        <canvas id="accidentTypesChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Severity Breakdown</h3>
+                        <canvas id="severityChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Monthly Trends</h3>
+                        <canvas id="monthlyTrendsChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="admin-section">
+                <div class="section-header">
+                    <h1>System Settings</h1>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3>📧 Email Configuration</h3>
+                        <div class="setting-item">
+                            <label>SMTP Server</label>
+                            <input type="text" value="smtp.gmail.com" readonly>
+                        </div>
+                        <div class="setting-item">
+                            <label>Status</label>
+                            <span class="status-badge success">Connected</span>
+                        </div>
+                        <button class="btn btn-secondary">Update Settings</button>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>📱 SMS Configuration</h3>
+                        <div class="setting-item">
+                            <label>Twilio Status</label>
+                            <span class="status-badge success">Connected</span>
+                        </div>
+                        <div class="setting-item">
+                            <label>Provider</label>
+                            <input type="text" value="Twilio" readonly>
+                        </div>
+                        <button class="btn btn-secondary">Update Settings</button>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>⚙️ Detection Settings</h3>
+                        <div class="setting-item">
+                            <label>Default Confidence</label>
+                            <input type="range" min="0.1" max="1.0" step="0.05" value="0.4">
+                            <span>0.4</span>
+                        </div>
+                        <div class="setting-item">
+                            <label>Auto-save Clips</label>
+                            <input type="checkbox" checked>
+                        </div>
+                        <button class="btn btn-primary">Save Settings</button>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>📊 System Information</h3>
+                        <div class="info-item">
+                            <span>Version:</span>
+                            <strong>1.0.0</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Database:</span>
+                            <strong>SQLite</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Uptime:</span>
+                            <strong>2 days 5 hours</strong>
+                        </div>
+                        <button class="btn btn-danger">Clear Cache</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clips Section -->
+            <section id="clips" class="admin-section">
+                <div class="section-header">
+                    <h1>Video Clips</h1>
+                    <div class="header-actions">
+                        <button id="deleteAllClips" class="btn btn-danger">🗑️ Delete All</button>
+                        <button id="refreshClipsAdmin" class="btn btn-secondary">🔄 Refresh</button>
+                        <button id="toggleAutoRefreshAdminClips" class="btn btn-success">✅ Auto-Refresh: ON</button>
+                    </div>
+                </div>
+                
+                <div class="search-filter">
+                    <input type="text" id="clipSearch" placeholder="🔍 Search clips...">
+                    <select id="clipUserFilter">
+                        <option value="">All Users</option>
+                    </select>
+                </div>
+                
+                <div id="clipsListAdmin" class="clips-grid"></div>
+            </section>
+
+            <!-- Uploads Section -->
+            <section id="uploads" class="admin-section">
+                <div class="section-header">
+                    <h1>Uploaded Videos</h1>
+                    <div class="header-actions">
+                        <button id="deleteAllUploads" class="btn btn-danger">🗑️ Delete All</button>
+                        <button id="refreshUploadsAdmin" class="btn btn-secondary">🔄 Refresh</button>
+                    </div>
+                </div>
+                
+                <div class="search-filter">
+                    <input type="text" id="uploadSearch" placeholder="🔍 Search uploads...">
+                    <select id="uploadUserFilter">
+                        <option value="">All Users</option>
+                    </select>
+                </div>
+                
+                <div id="uploadsListAdmin" class="clips-grid"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    <script>
+        // Prevent back button after logout
+        window.onload = function() {
+            if (performance.navigation.type === 2) {
+                window.location.reload();
+            }
+        };
+        
+        // Disable back button functionality
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            history.go(1);
+        };
+    </script>
+</body>
+</html>

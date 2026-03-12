@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accident Detection System - AI-Powered Safety Solution</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🚗 Accident Detection</div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('features') }}">Features</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                <li><a href="{{ url_for('login') }}" class="btn-nav">Login</a></li>
+                <li><a href="{{ url_for('register') }}" class="btn-nav-primary">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>AI-Powered Accident Detection System</h1>
+            <p>Real-time accident detection and alerting using advanced deep learning technology</p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started Free</a>
+                <a href="{{ url_for('features') }}" class="btn btn-secondary">Learn More</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="hero-placeholder">
+                <span style="font-size: 120px;">🚗💥</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Overview -->
+    <section class="features-overview">
+        <h2>Why Choose Our System?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Real-Time Detection</h3>
+                <p>Instant accident detection using YOLOv8 and ConvLSTM neural networks</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📧</div>
+                <h3>Instant Alerts</h3>
+                <p>Automatic email and SMS notifications for critical incidents</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📹</div>
+                <h3>Video Evidence</h3>
+                <p>Automatic clip generation with pre and post-incident footage</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎥</div>
+                <h3>Multiple Sources</h3>
+                <p>Support for webcam, RTSP streams, and video file uploads</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Analytics Dashboard</h3>
+                <p>Comprehensive statistics and incident tracking</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3>Secure & Private</h3>
+                <p>Role-based access control and encrypted data storage</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Upload or Stream</h3>
+                <p>Upload video files or connect live camera feeds</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>AI Analysis</h3>
+                <p>Advanced AI models detect and classify accidents</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Instant Alert</h3>
+                <p>Receive immediate notifications with video evidence</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo Section -->
+    <section class="demo-section">
+        <h2>Try It Yourself - Interactive Demo</h2>
+        <p class="demo-subtitle">Experience our AI-powered detection system in action</p>
+        
+        <div class="demo-container">
+            <div class="demo-tabs">
+                <button class="demo-tab active" data-demo="upload">📤 Upload Demo</button>
+                <button class="demo-tab" data-demo="live">🎥 Live Demo</button>
+                <button class="demo-tab" data-demo="results">📊 Sample Results</button>
+            </div>
+
+            <!-- Upload Demo -->
+            <div id="upload-demo" class="demo-content active">
+                <div class="demo-upload-area">
+                    <div class="demo-icon">🎬</div>
+                    <h3>Upload a Sample Video</h3>
+                    <p>Try our system with your own video or use our sample footage</p>
+                    <div class="demo-buttons">
+                        <button class="btn btn-primary" onclick="showDemoMessage('upload')">Upload Video</button>
+                        <button class="btn btn-secondary" onclick="showDemoMessage('sample')">Use Sample Video</button>
+                    </div>
+                    <p class="demo-note">⚠️ Demo mode - Sign up for full access</p>
+                </div>
+            </div>
+
+            <!-- Live Demo -->
+            <div id="live-demo" class="demo-content">
+                <div class="demo-video-container">
+                    <div class="demo-video-placeholder">
+                        <div class="demo-overlay">
+                            <h3>🎥 Live Detection Preview</h3>
+                            <p>Real-time accident detection in action</p>
+                            <div class="demo-stats">
+                                <div class="demo-stat">
+                                    <span class="stat-label">Detection Status:</span>
+                                    <span class="stat-value active">● Active</span>
+                                </div>
+                                <div class="demo-stat">
+                                    <span class="stat-label">Processing FPS:</span>
+                                    <span class="stat-value">30</span>
+                                </div>
+                                <div class="demo-stat">
+                                    <span class="stat-label">Objects Tracked:</span>
+                                    <span class="stat-value">5</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="showDemoMessage('live')">Start Live Demo</button>
+                            <p class="demo-note">⚠️ Demo mode - Sign up for full access</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Demo -->
+            <div id="results-demo" class="demo-content">
+                <div class="demo-results">
+                    <h3>Sample Detection Results</h3>
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <div class="result-header critical">
+                                <span class="result-icon">🚨</span>
+                                <span class="result-type">Pedestrian Hit</span>
+                                <span class="result-severity">Critical</span>
+                            </div>
+                            <div class="result-body">
+                                <p><strong>Detected:</strong> 2024-01-15 14:23:45</p>
+                                <p><strong>Location:</strong> Frame 1250</p>
+                                <p><strong>Confidence:</strong> 98.5%</p>
+                                <p><strong>Alert Sent:</strong> ✓ Email & SMS</p>
+                            </div>
+                        </div>
+
+                        <div class="result-card">
+                            <div class="result-header high">
+                                <span class="result-icon">⚠️</span>
+                                <span class="result-type">Rear Collision</span>
+                                <span class="result-severity">High</span>
+                            </div>
+                            <div class="result-body">
+                                <p><strong>Detected:</strong> 2024-01-15 15:10:22</p>
+                                <p><strong>Location:</strong> Frame 2840</p>
+                                <p><strong>Confidence:</strong> 95.2%</p>
+                                <p><strong>Alert Sent:</strong> ✓ Email & SMS</p>
+                            </div>
+                        </div>
+
+                        <div class="result-card">
+                            <div class="result-header medium">
+                                <span class="result-icon">⚡</span>
+                                <span class="result-type">Drifting/Skidding</span>
+                                <span class="result-severity">Medium</span>
+                            </div>
+                            <div class="result-body">
+                                <p><strong>Detected:</strong> 2024-01-15 16:45:10</p>
+                                <p><strong>Location:</strong> Frame 4120</p>
+                                <p><strong>Confidence:</strong> 92.8%</p>
+                                <p><strong>Alert Sent:</strong> ✓ Email</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="demo-cta">
+                        <p>Want to see more? Sign up for full access to all features!</p>
+                        <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started Free</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="demoMessage" class="demo-message" style="display: none;"></div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stat-item">
+            <h3>99.2%</h3>
+            <p>Detection Accuracy</p>
+        </div>
+        <div class="stat-item">
+            <h3>&lt;2s</h3>
+            <p>Response Time</p>
+        </div>
+        <div class="stat-item">
+            <h3>12+</h3>
+            <p>Accident Types</p>
+        </div>
+        <div class="stat-item">
+            <h3>24/7</h3>
+            <p>Monitoring</p>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <h2>Ready to Enhance Your Safety?</h2>
+        <p>Join hundreds of organizations using our AI-powered accident detection system</p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">Start Free Trial</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🚗 Accident Detection</h4>
+                <p>AI-powered safety solution for real-time accident detection and alerting.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('features') }}">Features</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Account</h4>
+                <ul>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: info@accident-detection.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Accident Detection System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Demo tab switching
+        document.querySelectorAll('.demo-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const demoType = tab.dataset.demo;
+                
+                // Update active tab
+                document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update active content
+                document.querySelectorAll('.demo-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(demoType + '-demo').classList.add('active');
+            });
+        });
+
+        // Demo message handler
+        function showDemoMessage(type) {
+            const messages = {
+                'upload': '📤 Upload feature is available after registration. Sign up to upload your videos!',
+                'sample': '🎬 Sample video analysis is available after registration. Create a free account to try it!',
+                'live': '🎥 Live detection is available after registration. Sign up to connect your cameras!'
+            };
+            
+            const messageDiv = document.getElementById('demoMessage');
+            messageDiv.textContent = messages[type];
+            messageDiv.style.display = 'block';
+            messageDiv.className = 'demo-message show';
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 300);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

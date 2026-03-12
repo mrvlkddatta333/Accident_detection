@@ -28,7 +28,7 @@ random.seed(42)
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Paths
-clip_output_dir = "clips"
+clip_output_dir = os.path.join("static", "clips")
 log_path = "accident_log.csv"
 os.makedirs(clip_output_dir, exist_ok=True)
 
@@ -36,7 +36,7 @@ os.makedirs(clip_output_dir, exist_ok=True)
 if not os.path.exists(log_path):
     with open(log_path, 'w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(['frame_index', 'track_id', 'accident_type', 'severity', 'bbox'])
+        writer.writerow(['frame_index', 'track_id', 'accident_type', 'severity', 'bbox', 'session_id'])
 
 
 # Class labels and severity
