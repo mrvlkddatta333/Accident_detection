@@ -24,9 +24,12 @@ def extract_sequence(cap, current_frame_idx, num_frames=12, size=(64, 64)):
 # Save Full-Frame Accident Clip (3 seconds: 1.5s before + after)
 # ---------------------------
 def save_fullframe_clip(video_path, pre_buffer_frames, start_frame_idx, accident_type, fps, width, height):
+<<<<<<< HEAD
+=======
     # Sanitize accident_type to prevent path traversal
     safe_accident_type = "".join(c for c in accident_type if c.isalnum() or c in ('_', '-'))
     
+>>>>>>> master
     cap = cv2.VideoCapture(video_path)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     half_sec = int(fps * 1.5)
@@ -34,6 +37,9 @@ def save_fullframe_clip(video_path, pre_buffer_frames, start_frame_idx, accident
     end = min(total_frames, start_frame_idx + half_sec)
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+<<<<<<< HEAD
+    out_path = os.path.join(clip_output_dir, f"Accident_{accident_type}_{timestamp}_f{start_frame_idx}.mp4")
+=======
     filename = f"Accident_{safe_accident_type}_{timestamp}_f{start_frame_idx}.mp4"
     out_path = os.path.join(clip_output_dir, filename)
     
@@ -43,6 +49,7 @@ def save_fullframe_clip(video_path, pre_buffer_frames, start_frame_idx, accident
         print(f"Security: Rejected output path outside clips directory")
         cap.release()
         return None
+>>>>>>> master
 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
@@ -67,15 +74,21 @@ def save_fullframe_clip(video_path, pre_buffer_frames, start_frame_idx, accident
 # Optional: Save Cropped Object Clip (per track)
 # ---------------------------
 def save_cropped_clip_by_track(video_path, start_frame, bbox, track_id, label, fps=30, clip_len_sec=3):
+<<<<<<< HEAD
+=======
     # Sanitize label to prevent path traversal
     safe_label = "".join(c for c in label if c.isalnum() or c in ('_', '-'))
     
+>>>>>>> master
     cap = cv2.VideoCapture(video_path)
     half_clip = int((fps * clip_len_sec) // 2)
     start = max(0, start_frame - half_clip)
     end = start_frame + half_clip
 
     x1, y1, x2, y2 = map(int, bbox)
+<<<<<<< HEAD
+    out_path = os.path.join(clip_output_dir, f"ID_{track_id}_{label}_frame{start_frame}.mp4")
+=======
     filename = f"ID_{track_id}_{safe_label}_frame{start_frame}.mp4"
     out_path = os.path.join(clip_output_dir, filename)
     
@@ -85,6 +98,7 @@ def save_cropped_clip_by_track(video_path, start_frame, bbox, track_id, label, f
         print(f"Security: Rejected output path outside clips directory")
         cap.release()
         return None
+>>>>>>> master
 
     out = None
     current = 0

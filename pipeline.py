@@ -2,9 +2,12 @@ from config import *
 from alerts import *
 from utils import *
 import threading
+<<<<<<< HEAD
+=======
 from dotenv import load_dotenv
 
 load_dotenv()
+>>>>>>> master
 
 def run_full_pipeline(video_path, output_path=None):
     cap = cv2.VideoCapture(video_path)
@@ -107,10 +110,19 @@ def run_full_pipeline(video_path, output_path=None):
                             height=height
                         )
                         def alert_thread():
+<<<<<<< HEAD
+                            # print("Email Sent!")
+                            # print("SMS Sent!")
+                            send_email_alert(
+                                subject=f"🚨 {accident_type} ({severity}) Detected",
+                                body=f"Accident Type: {accident_type}\nSeverity: {severity}\nObject: {class_name} (ID {track_id})\nFrame: {frame_idx}",
+                                to_email="diarysilk68@gmail.com",
+=======
                             send_email_alert(
                                 subject=f"🚨 {accident_type} ({severity}) Detected",
                                 body=f"Accident Type: {accident_type}\nSeverity: {severity}\nObject: {class_name} (ID {track_id})\nFrame: {frame_idx}",
                                 to_email=os.getenv("ALERT_RECIPIENT_EMAIL"),
+>>>>>>> master
                                 video_path=clip_path
                             )
 
