@@ -1,0 +1,29 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Output files
+clips/
+*.mp4
+accident_log.csv
+
+# Models (large files)
+models/*.pt
+models/*.keras
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -4,14 +4,35 @@ import csv
 import datetime
 import smtplib
 import numpy as np
+<<<<<<< HEAD
+=======
+import random
+>>>>>>> master
 from collections import deque
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
+<<<<<<< HEAD
+=======
+import tensorflow as tf
+>>>>>>> master
 from tensorflow.keras.models import load_model
 from ultralytics import YOLO
 from deep_sort_realtime.deepsort_tracker import DeepSort
 from twilio.rest import Client
+<<<<<<< HEAD
+=======
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Set random seeds for reproducibility
+tf.random.set_seed(42)
+np.random.seed(42)
+random.seed(42)
+
+>>>>>>> master
 # Change working directory to the script's location
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -53,7 +74,11 @@ severity_levels = {
 coco_classes = [
     'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck',
     'boat', 'traffic light', 'fire hydrant', 'stop sign', 'parking meter', 'bench',
+<<<<<<< HEAD
     'bird', 'cat', 'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra',
+=======
+    'bird', 'cat', 'dog', 'horse', 'sheep', 'cattle', 'elephant', 'bear', 'zebra',
+>>>>>>> master
     'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
     'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove',
     'skateboard', 'surfboard', 'tennis racket', 'bottle', 'wine glass', 'cup',
@@ -65,15 +90,41 @@ coco_classes = [
     'toothbrush'
 ]
 
+<<<<<<< HEAD
 # Load models
 coco_model = YOLO('models/yolov8n.pt')
 accident_model = YOLO('models/best.pt')
 convlstm_model = load_model('models/ConvLSTM_best_model.keras')
 convlstm_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+=======
+# Load models with error handling
+try:
+    coco_model = YOLO('models/yolov8n.pt')
+    print("✓ COCO model loaded successfully")
+except Exception as e:
+    print(f"✗ Failed to load COCO model: {e}")
+    raise
+
+try:
+    accident_model = YOLO('models/best.pt')
+    print("✓ Accident detection model loaded successfully")
+except Exception as e:
+    print(f"✗ Failed to load accident model: {e}")
+    raise
+
+try:
+    convlstm_model = load_model('models/ConvLSTM_best_model.keras')
+    convlstm_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    print("✓ ConvLSTM model loaded successfully")
+except Exception as e:
+    print(f"✗ Failed to load ConvLSTM model: {e}")
+    raise
+>>>>>>> master
 
 # DeepSORT tracker
 tracker = DeepSort(max_age=30, n_init=3)
 
+<<<<<<< HEAD
 # Twilio Credentials (replace with your actual values or use env vars)
 TWILIO_SID = "TWILIO_SID"
 TWILIO_AUTH_TOKEN = "TWILIO_AUTH_TOKEN"
@@ -82,3 +133,37 @@ TO_PHONE_NUMBER = "TO_PHONE_NUMBER"  # Your verified mobile number
 
 from_email = "your_mail_id@gmail.com"  # replace with your Gmail
 app_password = "app_password"  # Gmail App Password
+=======
+# Twilio Credentials - Load from environment variables
+TWILIO_SID = os.getenv("TWILIO_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
+TO_PHONE_NUMBER = os.getenv("TO_PHONE_NUMBER")
+
+from_email = os.getenv("FROM_EMAIL")
+app_password = os.getenv("EMAIL_APP_PASSWORD")
+
+# Validate credentials
+def validate_config():
+    missing = []
+    if not TWILIO_SID:
+        missing.append("TWILIO_SID")
+    if not TWILIO_AUTH_TOKEN:
+        missing.append("TWILIO_AUTH_TOKEN")
+    if not TWILIO_PHONE_NUMBER:
+        missing.append("TWILIO_PHONE_NUMBER")
+    if not TO_PHONE_NUMBER:
+        missing.append("TO_PHONE_NUMBER")
+    if not from_email:
+        missing.append("FROM_EMAIL")
+    if not app_password:
+        missing.append("EMAIL_APP_PASSWORD")
+    
+    if missing:
+        print(f"WARNING: Missing environment variables: {', '.join(missing)}")
+        print("Alert functionality will be disabled. Set these in .env file or environment.")
+        return False
+    return True
+
+ALERTS_ENABLED = validate_config()
+>>>>>>> master
